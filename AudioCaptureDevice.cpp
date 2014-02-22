@@ -4,23 +4,23 @@
 
 namespace AudioDX
 {
-	AudioCaptureDevice::AudioCaptureDevice()
-	{
+    AudioCaptureDevice::AudioCaptureDevice()
+    {
         impl = std::make_shared<AudioCaptureDeviceImpl>();
-	}
+    }
 
-	AudioCaptureDevice::~AudioCaptureDevice()
-	{
-	}
+    AudioCaptureDevice::~AudioCaptureDevice()
+    {
+    }
 
-	bool AudioCaptureDevice::initialize()
-	{
-		return (impl && impl->initialize());
-	}
+    bool AudioCaptureDevice::initialize()
+    {
+        return (impl && impl->initialize());
+    }
 
-	inline bool AudioCaptureDevice::isCaptureDevice() const
-	{
-		return true;
-	}
+    inline bool AudioCaptureDevice::isCaptureDevice() const
+    {
+        return true;
+    }
 
 }

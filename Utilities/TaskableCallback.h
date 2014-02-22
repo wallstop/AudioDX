@@ -7,17 +7,17 @@ class TaskableCallback
 {
 public:
 
-	TaskableCallback();
-	virtual ~TaskableCallback();
+    TaskableCallback();
+    virtual ~TaskableCallback();
 
-	virtual void updateProgress(unsigned int current, unsigned int total);
-	virtual void updateProgress(unsigned int current);
+    virtual void updateProgress(unsigned int current, unsigned int total);
+    virtual void updateProgress(unsigned int current);
 
-	virtual void stopTask(bool stop = false);
+    virtual void stopTask(bool stop = false);
 
 private:
-	std::atomic<unsigned int>	m_current;
-	std::atomic<unsigned int>	m_total;
-	std::atomic<bool>			m_cancel;
+    std::atomic<unsigned int>	m_current;
+    std::atomic<unsigned int>	m_total;
+    std::atomic<bool>			m_cancel;
 };
 

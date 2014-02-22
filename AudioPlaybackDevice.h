@@ -6,17 +6,17 @@
 namespace AudioDX
 {
 
-	class AudioPlaybackDeviceImpl;
+    class AudioPlaybackDeviceImpl;
 
-	class AudioPlaybackDevice : public AbstractAudioDevice
-	{
-	public:
+    class AudioPlaybackDevice : public AbstractAudioDevice
+    {
+    public:
 
-		AudioPlaybackDevice();
-		virtual ~AudioPlaybackDevice();
+        AudioPlaybackDevice();
+        virtual ~AudioPlaybackDevice();
 
-		virtual bool initialize();
+        virtual bool initialize();
 
-		virtual bool isPlaybackDevice() const;
-	};
+        virtual bool isPlaybackDevice() const;
+    };
 }

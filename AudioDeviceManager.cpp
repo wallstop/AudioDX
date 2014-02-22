@@ -7,29 +7,29 @@
 
 namespace AudioDX
 {
-	AudioDeviceManager::AudioDeviceManager()
-	{
+    AudioDeviceManager::AudioDeviceManager()
+    {
         impl = std::make_shared<AudioDeviceManagerImpl>();
-	}
+    }
 
-	AudioDeviceManager::~AudioDeviceManager()
-	{
-	}
+    AudioDeviceManager::~AudioDeviceManager()
+    {
+    }
 
-	bool AudioDeviceManager::initialize()
-	{
-		return (impl && impl->initialize());
-	}
+    bool AudioDeviceManager::initialize()
+    {
+        return (impl && impl->initialize());
+    }
 
     bool AudioDeviceManager::unInitialize()
     {
         return (impl && impl->unInitialize());
     }
 
-	bool AudioDeviceManager::isInitialized() const
-	{
-		return (impl && impl->isInitialized());
-	}
+    bool AudioDeviceManager::isInitialized() const
+    {
+        return (impl && impl->isInitialized());
+    }
     
     std::vector<std::shared_ptr<AudioPlaybackDevice>> AudioDeviceManager::getPlaybackDevices() const
     {

@@ -23,9 +23,9 @@ namespace AudioDX
 #define releaseDevice(device)   \
     if((device)) { (device)->Release(); (device) = nullptr; }
 
-	class AbstractAudioDeviceImpl
-	{
-	public:
+    class AbstractAudioDeviceImpl
+    {
+    public:
         AbstractAudioDeviceImpl();
         AbstractAudioDeviceImpl(IMMDevice *mmDevice);
         virtual ~AbstractAudioDeviceImpl();

@@ -4,44 +4,44 @@
 
 namespace AudioDX
 {
-	
-	AbstractAudioDevice::AbstractAudioDevice() : impl(nullptr)
-	{
-	}
-	
-	AbstractAudioDevice::~AbstractAudioDevice()
-	{
-	}
 
-	bool AbstractAudioDevice::initialize()
-	{
-		return (impl && impl->initialize());
-	}
+    AbstractAudioDevice::AbstractAudioDevice() : impl(nullptr)
+    {
+    }
 
-	bool AbstractAudioDevice::start()
-	{
-		return (impl && impl->start());
-	}
+    AbstractAudioDevice::~AbstractAudioDevice()
+    {
+    }
 
-	bool AbstractAudioDevice::stop()
-	{
-		return (impl && impl->stop());
-	}
+    bool AbstractAudioDevice::initialize()
+    {
+        return (impl && impl->initialize());
+    }
 
-	inline bool AbstractAudioDevice::isCaptureDevice() const
-	{
-		return false;
-	}
+    bool AbstractAudioDevice::start()
+    {
+        return (impl && impl->start());
+    }
 
-	inline bool AbstractAudioDevice::isPlaybackDevice() const
-	{
-		return false;
-	}
+    bool AbstractAudioDevice::stop()
+    {
+        return (impl && impl->stop());
+    }
 
-	bool AbstractAudioDevice::isValid() const
-	{
-		return (impl && impl->isValid());
-	}
+    inline bool AbstractAudioDevice::isCaptureDevice() const
+    {
+        return false;
+    }
+
+    inline bool AbstractAudioDevice::isPlaybackDevice() const
+    {
+        return false;
+    }
+
+    bool AbstractAudioDevice::isValid() const
+    {
+        return (impl && impl->isValid());
+    }
 
     AudioFormat AbstractAudioDevice::getAudioFormat() const
     {

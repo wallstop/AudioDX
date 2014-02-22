@@ -6,19 +6,19 @@
 namespace AudioDX
 {
 
-	class AudioCaptureDeviceImpl;
+    class AudioCaptureDeviceImpl;
 
-	class AudioCaptureDevice : public AbstractAudioDevice
-	{
-	public:
-		
-		AudioCaptureDevice();
-		virtual ~AudioCaptureDevice();
+    class AudioCaptureDevice : public AbstractAudioDevice
+    {
+    public:
 
-		virtual bool initialize();
+        AudioCaptureDevice();
+        virtual ~AudioCaptureDevice();
 
-		virtual bool isCaptureDevice() const;
+        virtual bool initialize();
 
-	};
+        virtual bool isCaptureDevice() const;
+
+    };
 
 }

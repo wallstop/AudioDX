@@ -9,30 +9,32 @@ namespace AudioDX
 #define REFERENCE_TIMES_PER_MILLISECOND 10000
 #define REFERENCE_TIMES_PER_SECOND 1000 * REFERENCE_TIMES_PER_MILLISECOND
 	
-	AudioPlaybackDeviceImpl::AudioPlaybackDeviceImpl(IMMDevice* mmDevice, IAudioRenderClient* playbackClient) 
-		: AbstractAudioDeviceImpl(mmDevice), m_playbackClient(playbackClient)
-	{
-	}
+    AudioPlaybackDeviceImpl::AudioPlaybackDeviceImpl(IMMDevice* mmDevice, IAudioRenderClient* playbackClient) 
+        : AbstractAudioDeviceImpl(mmDevice), m_playbackClient(playbackClient)
+    {
+    }
 
-	AudioPlaybackDeviceImpl::~AudioPlaybackDeviceImpl()
-	{
-		stop();
+    AudioPlaybackDeviceImpl::~AudioPlaybackDeviceImpl()
+    {
+        stop();
         releaseDevice(m_playbackClient);
-	}
+    }
 
-	bool AudioPlaybackDeviceImpl::initialize(TaskableCallback* callback)
-	{
+    bool AudioPlaybackDeviceImpl::initialize(TaskableCallback* callback)
+    {
         if(!AbstractAudioDeviceImpl::initialize(callback))
             return false;
 
         // Setup our wave format
-		WAVEFORMATEX *waveFormat = nullptr;
-		int ok = m_client->GetMixFormat(&waveFormat);
-		if(ok < 0 || !waveFormat)
-		{
+        WAVEFORMATEX *waveFormat = nullptr;
+        int ok = m_client->GetMixFormat(&waveFormat);
+        if(ok < 0 || !waveFormat)
+        {
 			// Unable to get the device's audio format
-			releaseDevice(m_client);
-		}
+            releaseDevice(m_client);
+            CoTaskMemFree(waveFormat);
+            return false;
+        }
 
 		m_audioFormat.channels			= waveFormat->nChannels;
 		m_audioFormat.samplesPerSecond	= waveFormat->nSamplesPerSec;
@@ -46,10 +48,9 @@ namespace AudioDX
 		if(ok < 0)
 		{
 			// Unable to properly initialize IAudioClient
-			releaseDevice(m_client);
-
-			return false;
-		}
+            releaseDevice(m_client);
+            return false;
+        }
 
         ok = m_client->GetService(__uuidof(IAudioRenderClient),
             reinterpret_cast<void** >(&m_playbackClient));

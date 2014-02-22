@@ -32,27 +32,26 @@ namespace AudioDX
 			return false;
 		}
 
-		int ok = -1;
         // Grab our AudioClient
-		ok = m_mmDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr,
-			reinterpret_cast<void** >(&m_client));
-		if(ok < 0 || !m_client)
-		{
-			// Unable to get an IAudioClient handle
-			return false;
-		}
+        int ok = m_mmDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr,
+            reinterpret_cast<void** >(&m_client));
+        if(ok < 0 || !m_client)
+        {
+        // Unable to get an IAudioClient handle
+        return false;
+        }
 
         return true;
     }
 
     bool AbstractAudioDeviceImpl::start()
     {
-        return (m_client && (m_client->Start() > 0 ? true : false));
+        return (m_client && (m_client->Start() < 0 ? false : true));
     }
 
     bool AbstractAudioDeviceImpl::stop()
     {
-        return (m_client && (m_client->Stop() > 0 ? true : false));
+        return (m_client && (m_client->Stop() < 0 ? false : true));
     }
 
     bool AbstractAudioDeviceImpl::isValid() const

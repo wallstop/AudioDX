@@ -17,19 +17,19 @@ namespace AudioDX
 
 #ifdef WIN32
 
-	class AbstractAudioDevice;
+    class AbstractAudioDevice;
     struct EDataFlow;
 
-	class AudioDeviceManagerImpl
-	{
-	public:
-		AudioDeviceManagerImpl();
-		~AudioDeviceManagerImpl();
+    class AudioDeviceManagerImpl
+    {
+    public:
+        AudioDeviceManagerImpl();
+        ~AudioDeviceManagerImpl();
 
-		bool initialize();
+        bool initialize();
         bool unInitialize();
 
-		bool isInitialized() const;
+        bool isInitialized() const;
 
         void enumerateAllDevices();
         void enumeratePlaybackDevices();
@@ -51,9 +51,9 @@ namespace AudioDX
 
         void removeDevice(std::shared_ptr<AbstractAudioDevice> device);
 
-		std::atomic<bool> m_initialized;
-		std::set<std::shared_ptr<AbstractAudioDevice>> m_devices;
-	};
+        std::atomic<bool> m_initialized;
+        std::set<std::shared_ptr<AbstractAudioDevice>> m_devices;
+    };
 
 #endif
 

@@ -4,17 +4,20 @@
 namespace AudioDX
 {
 
-	AudioSilenceTask::AudioSilenceTask()
-	{
+    AudioSilenceTask::AudioSilenceTask()
+    {
+    }
 
-	}
+    AudioSilenceTask::~AudioSilenceTask()
+    {
+    }
 
-	void AudioSilenceTask::run(TaskableCallback *callback)
-	{
-		if(!m_device)
-			return;
+    void AudioSilenceTask::run(TaskableCallback *callback)
+    {
+        if(!m_device)
+            return;
 
-		// TODO: STUB
-	}
+        // TODO: STUB
+    }
 
 }

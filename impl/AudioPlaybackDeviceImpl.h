@@ -8,20 +8,20 @@ namespace AudioDX
 
 #ifdef WIN32
 
-	class AudioPlaybackDeviceImpl : public AbstractAudioDeviceImpl
-	{
-	public:
-		
-		AudioPlaybackDeviceImpl(IMMDevice* mmDevice = nullptr,
-			IAudioRenderClient* playbackClient = nullptr);
-		virtual ~AudioPlaybackDeviceImpl();
+    class AudioPlaybackDeviceImpl : public AbstractAudioDeviceImpl
+    {
+    public:
 
-		virtual bool initialize(TaskableCallback* callback = nullptr);
+        AudioPlaybackDeviceImpl(IMMDevice* mmDevice = nullptr,
+            IAudioRenderClient* playbackClient = nullptr);
+        virtual ~AudioPlaybackDeviceImpl();
 
-	protected:
-		IAudioRenderClient*	m_playbackClient;
+        virtual bool initialize(TaskableCallback* callback = nullptr);
 
-	};
+    protected:
+        IAudioRenderClient*	m_playbackClient;
+
+    };
 
 #endif
 

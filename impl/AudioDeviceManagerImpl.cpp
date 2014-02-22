@@ -28,10 +28,10 @@ namespace AudioDX
         return enumerator;
     }
 
-	AudioDeviceManagerImpl::AudioDeviceManagerImpl() : m_initialized(false)
-	{
-        initialize();
-	}
+    AudioDeviceManagerImpl::AudioDeviceManagerImpl() : m_initialized(false)
+    {
+            initialize();
+    }
 
     AudioDeviceManagerImpl::~AudioDeviceManagerImpl()
     {
@@ -42,9 +42,9 @@ namespace AudioDX
     {
         if(!m_initialized)
         {
-		    int result = 0;
-		    result = CoInitialize(nullptr);
-		    m_initialized = result >= 0;
+            int result = 0;
+            result = CoInitialize(nullptr);
+            m_initialized = result >= 0;
 
             enumerateAllDevices();
         }

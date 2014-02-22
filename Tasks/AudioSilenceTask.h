@@ -5,19 +5,19 @@
 
 namespace AudioDX
 {
-	class AudioSilenceTask : public AbstractAudioTask
-	{
-	public:
+    class AudioSilenceTask : public AbstractAudioTask
+    {
+    public:
 
-		AudioSilenceTask();
-		~AudioSilenceTask();
+        AudioSilenceTask();
+        ~AudioSilenceTask();
 
-		void run(TaskableCallback *callback = nullptr);
+        void run(TaskableCallback *callback = nullptr);
 
-	private:
+    private:
 
-		// TODO: Flesh out rest of class
+        // TODO: Flesh out rest of class
 
-	};
+    };
 
 }

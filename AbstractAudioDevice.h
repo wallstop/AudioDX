@@ -6,34 +6,34 @@
 namespace AudioDX
 {
 
-	class AbstractAudioDeviceImpl;
-	struct AudioFormat;
+    class AbstractAudioDeviceImpl;
+    struct AudioFormat;
 
-	// Created by AudioDeviceManager. Don't try to yourself, kids
-	class AbstractAudioDevice
-	{
-	public:
+    // Created by AudioDeviceManager. Don't try to yourself, kids
+    class AbstractAudioDevice
+    {
+    public:
 
-		virtual ~AbstractAudioDevice();
-		
-		virtual bool initialize() = 0;
+        virtual ~AbstractAudioDevice();
 
-		virtual bool start();
-		virtual bool stop();
+        virtual bool initialize() = 0;
 
-		virtual bool isCaptureDevice() const;
-		virtual bool isPlaybackDevice() const;
-		virtual bool isValid() const;	
+        virtual bool start();
+        virtual bool stop();
 
-		virtual AudioFormat getAudioFormat() const;	
+        virtual bool isCaptureDevice() const;
+        virtual bool isPlaybackDevice() const;
+        virtual bool isValid() const;	
 
-	protected:
-		AbstractAudioDevice();		
+        virtual AudioFormat getAudioFormat() const;	
 
-		std::shared_ptr<AbstractAudioDeviceImpl> impl;
+    protected:
+        AbstractAudioDevice();		
 
-		friend class AudioDeviceManager;
-		friend class AudioDeviceManagerImpl;
-	};
+        std::shared_ptr<AbstractAudioDeviceImpl> impl;
+
+        friend class AudioDeviceManager;
+        friend class AudioDeviceManagerImpl;
+    };
 
 }
