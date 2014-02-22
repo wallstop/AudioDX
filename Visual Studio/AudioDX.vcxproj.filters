@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Tasks">
+      <UniqueIdentifier>{adc1f26d-764e-4d3b-a815-20d7e79228e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{2ad47661-e597-4048-afee-8e0b340be495}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\API">
+      <UniqueIdentifier>{22193b9b-1bf4-4c06-b628-83a9e3bd0d00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\impl">
+      <UniqueIdentifier>{4e9736e6-4c81-4e69-9c77-69dbc0b7b5e0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Tasks\AbstractAudioTask.h">
+      <Filter>Source Files\Tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Tasks\AudioSilenceTask.h">
+      <Filter>Source Files\Tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utilities\TaskableCallback.h">
+      <Filter>Source Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AudioFormat.h">
+      <Filter>Source Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AbstractAudioDevice.h">
+      <Filter>Source Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\impl\AudioCaptureDeviceImpl.h">
+      <Filter>Source Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AudioDeviceManager.h">
+      <Filter>Source Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\impl\AudioDeviceManagerImpl.h">
+      <Filter>Source Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\impl\AbstractAudioDeviceImpl.h">
+      <Filter>Source Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AudioCaptureDevice.h">
+      <Filter>Source Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AudioPlaybackDevice.h">
+      <Filter>Source Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\impl\AudioPlaybackDeviceImpl.h">
+      <Filter>Source Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AudioDXLib.h">
+      <Filter>Source Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AudioBuffer.h">
+      <Filter>Source Files\API</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Tasks\AudioSilenceTask.cpp">
+      <Filter>Source Files\Tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AbstractAudioDevice.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\impl\AudioCaptureDeviceImpl.cpp">
+      <Filter>Source Files\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AudioDeviceManager.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\impl\AudioDeviceManagerImpl.cpp">
+      <Filter>Source Files\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\impl\AbstractAudioDeviceImpl.cpp">
+      <Filter>Source Files\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utilities\TaskableCallback.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AudioCaptureDevice.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AudioPlaybackDevice.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\impl\AudioPlaybackDeviceImpl.cpp">
+      <Filter>Source Files\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AudioBuffer.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
