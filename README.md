@@ -4,7 +4,7 @@ AudioDX
 Audio Abstraction library for interfacing with hardware audio I/O devices
 
 Currently only supports Windows.
-Currently only allows handles to be opened to available Audio Devices, passed around, but no buffer I/O. This will be coming shortly.
+API is about 80% implemented. There is now limited support for passing buffers to and fro. Currently, CaptureDevice buffer-getting is broken...
 
 Expanded API and Documentation coming soon...
 For auto-generated documentation, class-heirarchies, etc, see \html.
