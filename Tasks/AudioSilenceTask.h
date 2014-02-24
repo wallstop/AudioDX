@@ -5,6 +5,7 @@
 
 namespace AudioDX
 {
+
     class AudioSilenceTask : public AbstractAudioTask
     {
     public:

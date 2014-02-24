@@ -23,6 +23,9 @@ namespace AudioDX
 #define releaseDevice(device)   \
     if((device)) { (device)->Release(); (device) = nullptr; }
 
+    class AudioBuffer;
+    struct AbstractFilter;
+
     class AbstractAudioDeviceImpl
     {
     public:
@@ -30,14 +33,19 @@ namespace AudioDX
         AbstractAudioDeviceImpl(IMMDevice *mmDevice);
         virtual ~AbstractAudioDeviceImpl();
 
-        virtual bool initialize(TaskableCallback *callback = nullptr) = 0;
+        virtual bool        initialize(TaskableCallback *callback = nullptr) = 0;
 
-        virtual bool start();
-        virtual bool stop();
+        virtual bool        start();
+        virtual bool        isStarted() const;
+        virtual bool        stop();
+        virtual bool        isStopped() const;
 
         virtual AudioFormat getAudioFormat() const;
+        virtual AudioBuffer readFromBuffer() = 0;
+        virtual bool        writeToBuffer(const AudioBuffer& in, const AbstractFilter& filter) = 0;
 
-        virtual bool isValid() const;
+        virtual bool        isValid() const;
+
 
     protected:
         IMMDevice* m_mmDevice;
@@ -46,6 +54,11 @@ namespace AudioDX
         AudioFormat m_audioFormat;
 
         bool m_initialized;
+        // Having one boolean to control for isStarted or isStopped could lead to some
+        // wonky states.. What about an uninitialized device? 
+        bool m_started;
+
+        friend class AudioDeviceManagerImpl;
 
         };
 

@@ -1,6 +1,15 @@
 \hypertarget{class_audio_d_x_1_1_abstract_audio_device}{\section{Audio\-D\-X\-:\-:Abstract\-Audio\-Device Class Reference}
 \label{class_audio_d_x_1_1_abstract_audio_device}\index{Audio\-D\-X\-::\-Abstract\-Audio\-Device@{Audio\-D\-X\-::\-Abstract\-Audio\-Device}}
 }
+
+
+\hyperlink{class_audio_d_x_1_1_abstract_audio_device}{Abstract\-Audio\-Device} is the base class for any system-\/recognized hardware.  
+
+
+
+
+{\ttfamily \#include $<$Abstract\-Audio\-Device.\-h$>$}
+
 Inheritance diagram for Audio\-D\-X\-:\-:Abstract\-Audio\-Device\-:\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -30,6 +39,12 @@ Inheritance diagram for Audio\-D\-X\-:\-:Abstract\-Audio\-Device\-:\begin{figure
 \item 
 \hypertarget{class_audio_d_x_1_1_abstract_audio_device_a3910313a0578fa3c2b06501cc179af28}{virtual \hyperlink{struct_audio_d_x_1_1_audio_format}{Audio\-Format} {\bfseries get\-Audio\-Format} () const }\label{class_audio_d_x_1_1_abstract_audio_device_a3910313a0578fa3c2b06501cc179af28}
 
+\item 
+\hypertarget{class_audio_d_x_1_1_abstract_audio_device_a0c1724ac52fe657184986053994254f0}{virtual \hyperlink{class_audio_d_x_1_1_audio_buffer}{Audio\-Buffer} {\bfseries read\-From\-Buffer} ()=0}\label{class_audio_d_x_1_1_abstract_audio_device_a0c1724ac52fe657184986053994254f0}
+
+\item 
+\hypertarget{class_audio_d_x_1_1_abstract_audio_device_af7a91b536071e36806f1fc7eb029f872}{virtual bool {\bfseries write\-To\-Buffer} (const \hyperlink{class_audio_d_x_1_1_audio_buffer}{Audio\-Buffer} \&in, const \hyperlink{struct_audio_d_x_1_1_abstract_filter}{Abstract\-Filter} \&filter)=0}\label{class_audio_d_x_1_1_abstract_audio_device_af7a91b536071e36806f1fc7eb029f872}
+
 \end{DoxyCompactItemize}
 \subsection*{Protected Attributes}
 \begin{DoxyCompactItemize}
@@ -48,6 +63,9 @@ $<$ Abstract\-Audio\-Device\-Impl $>$ {\bfseries impl}}\label{class_audio_d_x_1_
 
 \end{DoxyCompactItemize}
 
+
+\subsection{Detailed Description}
+\hyperlink{class_audio_d_x_1_1_abstract_audio_device}{Abstract\-Audio\-Device} is the base class for any system-\/recognized hardware. 
 
 The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
 \item 

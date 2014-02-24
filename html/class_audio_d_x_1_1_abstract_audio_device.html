@@ -95,6 +95,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">AudioDX::AbstractAudioDevice Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><a class="el" href="class_audio_d_x_1_1_abstract_audio_device.html" title="AbstractAudioDevice is the base class for any system-recognized hardware. ">AbstractAudioDevice</a> is the base class for any system-recognized hardware.  
+ <a href="class_audio_d_x_1_1_abstract_audio_device.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_abstract_audio_device_8h_source.html">AbstractAudioDevice.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for AudioDX::AbstractAudioDevice:</div>
 <div class="dyncontent">
@@ -129,6 +134,12 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>isValid</b> (
 <tr class="memitem:a3910313a0578fa3c2b06501cc179af28"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3910313a0578fa3c2b06501cc179af28"></a>
 virtual <a class="el" href="struct_audio_d_x_1_1_audio_format.html">AudioFormat</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getAudioFormat</b> () const </td></tr>
 <tr class="separator:a3910313a0578fa3c2b06501cc179af28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c1724ac52fe657184986053994254f0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c1724ac52fe657184986053994254f0"></a>
+virtual <a class="el" href="class_audio_d_x_1_1_audio_buffer.html">AudioBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><b>readFromBuffer</b> ()=0</td></tr>
+<tr class="separator:a0c1724ac52fe657184986053994254f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7a91b536071e36806f1fc7eb029f872"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af7a91b536071e36806f1fc7eb029f872"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>writeToBuffer</b> (const <a class="el" href="class_audio_d_x_1_1_audio_buffer.html">AudioBuffer</a> &amp;in, const <a class="el" href="struct_audio_d_x_1_1_abstract_filter.html">AbstractFilter</a> &amp;filter)=0</td></tr>
+<tr class="separator:af7a91b536071e36806f1fc7eb029f872"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -146,14 +157,16 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>AudioDeviceManager</
 class&#160;</td><td class="memItemRight" valign="bottom"><b>AudioDeviceManagerImpl</b></td></tr>
 <tr class="separator:a04f96566766f09f439a3a13c5fcbe408"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="class_audio_d_x_1_1_abstract_audio_device.html" title="AbstractAudioDevice is the base class for any system-recognized hardware. ">AbstractAudioDevice</a> is the base class for any system-recognized hardware. </p>
+</div><hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_abstract_audio_device_8h_source.html">AbstractAudioDevice.h</a></li>
 <li>AbstractAudioDevice.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 22 2014 15:41:13 for AudioDX by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 24 2014 00:53:59 for AudioDX by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

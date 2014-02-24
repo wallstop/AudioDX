@@ -99,7 +99,7 @@ Inheritance diagram for AudioDX::AudioPlaybackDevice:</div>
  <div class="center">
   <img src="class_audio_d_x_1_1_audio_playback_device.png" usemap="#AudioDX::AudioPlaybackDevice_map" alt=""/>
   <map id="AudioDX::AudioPlaybackDevice_map" name="AudioDX::AudioPlaybackDevice_map">
-<area href="class_audio_d_x_1_1_abstract_audio_device.html" alt="AudioDX::AbstractAudioDevice" shape="rect" coords="0,0,194,24"/>
+<area href="class_audio_d_x_1_1_abstract_audio_device.html" title="AbstractAudioDevice is the base class for any system-recognized hardware. " alt="AudioDX::AbstractAudioDevice" shape="rect" coords="0,0,194,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -111,6 +111,12 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>initialize</b
 <tr class="memitem:ab3a966c43557f8cee9bac54d46ef08a0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab3a966c43557f8cee9bac54d46ef08a0"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>isPlaybackDevice</b> () const </td></tr>
 <tr class="separator:ab3a966c43557f8cee9bac54d46ef08a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f018910e1511f29864ac8fb98b19e87"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2f018910e1511f29864ac8fb98b19e87"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>writeToBuffer</b> (const <a class="el" href="class_audio_d_x_1_1_audio_buffer.html">AudioBuffer</a> &amp;in, const <a class="el" href="struct_audio_d_x_1_1_abstract_filter.html">AbstractFilter</a> &amp;filter=<a class="el" href="struct_audio_d_x_1_1_abstract_filter.html">AbstractFilter</a>())</td></tr>
+<tr class="separator:a2f018910e1511f29864ac8fb98b19e87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae364b268314fbb1bea0bc25447b00088"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae364b268314fbb1bea0bc25447b00088"></a>
+virtual <a class="el" href="class_audio_d_x_1_1_audio_buffer.html">AudioBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><b>readFromBuffer</b> ()</td></tr>
+<tr class="separator:ae364b268314fbb1bea0bc25447b00088"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_audio_d_x_1_1_abstract_audio_device"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_audio_d_x_1_1_abstract_audio_device')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_audio_d_x_1_1_abstract_audio_device.html">AudioDX::AbstractAudioDevice</a></td></tr>
 <tr class="memitem:a165b72ae32ab24d88018a2c4c7acd188 inherit pub_methods_class_audio_d_x_1_1_abstract_audio_device"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a165b72ae32ab24d88018a2c4c7acd188"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>start</b> ()</td></tr>
@@ -143,7 +149,7 @@ std::shared_ptr<br class="typebreak"/>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 22 2014 15:41:13 for AudioDX by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 24 2014 00:53:59 for AudioDX by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

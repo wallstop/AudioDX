@@ -4,7 +4,6 @@
 #include <AudioDX/AudioDeviceManager.h>
 
 #include <set>
-#include <atomic>
 
 #ifdef WIN32
 
@@ -38,20 +37,26 @@ namespace AudioDX
         std::vector<std::shared_ptr<AudioCaptureDevice>>    getCaptureDevices() const;
         std::vector<std::shared_ptr<AudioPlaybackDevice>>   getPlaybackDevices() const;        
         std::vector<std::shared_ptr<AbstractAudioDevice>>   getAllDevices() const;
-        //std::shared_ptr<AudioPlaybackDevice>                getDefaultPlaybackDevice() const;
+        std::shared_ptr<AudioCaptureDevice>                 getDefaultCaptureDevice() const;
+        std::shared_ptr<AudioPlaybackDevice>                getDefaultPlaybackDevice() const;
 
 	private:
 
-        // This is some tight coupling of the template arguments...
         template <typename DeviceType, typename DeviceTypeImpl, ::EDataFlow flowType>
         void enumerateDevicesOfType();
 
         template <typename DeviceType>
         void removeDevicesOfType();
 
+        template <typename DeviceType>
+        std::vector<std::shared_ptr<DeviceType>> getDevicesOfType() const;
+
+        template <typename DeviceType, typename DeviceTypeImpl, ::EDataFlow flowType, ::ERole role>
+        std::shared_ptr<DeviceType> getDefaultDeviceOfType() const;
+
         void removeDevice(std::shared_ptr<AbstractAudioDevice> device);
 
-        std::atomic<bool> m_initialized;
+        bool m_initialized;
         std::set<std::shared_ptr<AbstractAudioDevice>> m_devices;
     };
 
