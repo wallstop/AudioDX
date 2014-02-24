@@ -170,7 +170,7 @@ namespace AudioDX
             // One at a time... there's got to be a better way
             for(auto deviceItr = m_devices.cbegin(); deviceItr != m_devices.cend(); ++deviceItr)
             {
-                if(dynamic_cast<DeviceType*>(deviceItr->get()))
+                if(std::dynamic_pointer_cast<DeviceType>(*deviceItr))
                 {
                     m_devices.erase(deviceItr);
                     break;
