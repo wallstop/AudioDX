@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <atomic>
 #include <vector>
 #include <memory>
 
@@ -25,6 +24,8 @@ namespace AudioDX
         std::vector<std::shared_ptr<AudioPlaybackDevice>>   getPlaybackDevices() const;
         std::vector<std::shared_ptr<AudioCaptureDevice>>    getCaptureDevices() const;
         std::vector<std::shared_ptr<AbstractAudioDevice>>   getAllDevices() const;
+        std::shared_ptr<AudioCaptureDevice>                 getDefaultCaptureDevice() const;
+        std::shared_ptr<AudioPlaybackDevice>                getDefaultPlaybackDevice() const;
 
         bool isInitialized() const;
 

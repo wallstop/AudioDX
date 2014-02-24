@@ -1,6 +1,7 @@
 
 #include <AudioDX/AudioPlaybackDevice.h>
 #include <AudioDX/impl/AudioPlaybackDeviceImpl.h>
+#include <AudioDX/AudioBuffer.h>
 
 namespace AudioDX
 {
@@ -21,6 +22,18 @@ namespace AudioDX
     inline bool AudioPlaybackDevice::isPlaybackDevice() const
     {
         return true;
+    }
+
+    bool AudioPlaybackDevice::writeToBuffer(const AudioBuffer& in, const AbstractFilter& filter)
+    {
+        return (impl && impl->writeToBuffer(in, filter));
+    }
+
+    AudioBuffer AudioPlaybackDevice::readFromBuffer()
+    {
+        if(impl)
+            return impl->readFromBuffer();
+        return BAD_BUFFER;
     }
 
 }

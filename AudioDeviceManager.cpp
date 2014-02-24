@@ -14,6 +14,7 @@ namespace AudioDX
 
     AudioDeviceManager::~AudioDeviceManager()
     {
+        unInitialize();
     }
 
     bool AudioDeviceManager::initialize()
@@ -50,6 +51,20 @@ namespace AudioDX
         if(impl)
             return impl->getAllDevices();
         return std::vector<std::shared_ptr<AbstractAudioDevice>>();
+    }
+
+    std::shared_ptr<AudioCaptureDevice> AudioDeviceManager::getDefaultCaptureDevice() const
+    {
+        if(impl)
+            return impl->getDefaultCaptureDevice();
+        return std::shared_ptr<AudioCaptureDevice>();
+    }
+
+    std::shared_ptr<AudioPlaybackDevice> AudioDeviceManager::getDefaultPlaybackDevice() const
+    {
+        if(impl)
+            return impl->getDefaultPlaybackDevice();
+        return std::shared_ptr<AudioPlaybackDevice>();
     }
 
 }

@@ -6,15 +6,22 @@
 namespace AudioDX
 {
 
-    class AbstractAudioDeviceImpl;
-    struct AudioFormat;
+    class   AbstractAudioDeviceImpl;
+    struct  AudioFormat;
+    struct  AbstractFilter;
+    class   AudioBuffer;
 
-    // Created by AudioDeviceManager. Don't try to yourself, kids
+    /*!
+        \brief  AbstractAudioDevice is the base class for any system-recognized
+                hardware 
+
+
+    */
     class AbstractAudioDevice
     {
     public:
 
-        virtual ~AbstractAudioDevice();
+        virtual ~AbstractAudioDevice() = 0;
 
         virtual bool initialize() = 0;
 
@@ -26,6 +33,8 @@ namespace AudioDX
         virtual bool isValid() const;	
 
         virtual AudioFormat getAudioFormat() const;	
+        virtual AudioBuffer readFromBuffer() = 0;
+        virtual bool        writeToBuffer(const AudioBuffer& in, const AbstractFilter& filter) = 0;
 
     protected:
         AbstractAudioDevice();		
