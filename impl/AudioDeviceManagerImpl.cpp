@@ -6,6 +6,12 @@
 #include <AudioDX/impl/AudioCaptureDeviceImpl.h>
 #include <AudioDX/impl/AudioPlaybackDeviceImpl.h>
 
+#ifdef WIN32
+
+#include <atlbase.h>
+
+#endif
+
 namespace AudioDX
 {
 
@@ -212,19 +218,29 @@ namespace AudioDX
             return std::shared_ptr<DeviceType>();
         }
 
-        //// So now we check if we have a device with a handle to that particular IMMDevice
-        //for(auto deviceItr = m_devices.cbegin(); deviceItr != m_devices.cend(); ++deviceItr)
-        //{
-        //    // Lots of safety checks here
-        //    if((*deviceItr) && (*deviceItr)->impl && ((*deviceItr)->impl->m_mmDevice == device))
-        //    {
-        //        // Make sure we're not returning a handle to the wrong kind of device
-        //        auto ret = std::dynamic_pointer_cast<DeviceType>(*deviceItr);
-        //        if(ret)
-        //            return ret;
-        //        // If we get here, we *DO* want to continue - we might have a good handle elsewhere
-        //    }
-        //}
+        LPWSTR deviceIdAsLPWSTR;
+        device->GetId(&deviceIdAsLPWSTR);
+        const std::string deviceId = CW2A(deviceIdAsLPWSTR);
+
+        // So now we check if we have a device with a handle to that particular IMMDevice
+        for(auto deviceItr = m_devices.cbegin(); deviceItr != m_devices.cend(); ++deviceItr)
+        {
+            // Lots of safety checks here
+            if((*deviceItr) &&  (*deviceItr)->impl &&  (*deviceItr)->impl->m_mmDevice)
+            {
+                LPWSTR owningDeviceID;
+                (*deviceItr)->impl->m_mmDevice->GetId(&owningDeviceID);
+                const std::string owningID = CW2A(owningDeviceID);
+                if(owningID.compare(deviceId) == 0)
+                {
+                    // Make sure we're not returning a handle to the wrong kind of device
+                    auto ret = std::dynamic_pointer_cast<DeviceType>(*deviceItr);
+                    if(ret)
+                        return ret;
+                }
+                // If we get here, we *DO* want to continue - we might have a good handle elsewhere
+            }
+        }
 
         // If we haven't found it in our set (why isn't it there? That's weird), let's make it
         std::shared_ptr<DeviceTypeImpl> defaultDeviceImpl   = std::make_shared<DeviceTypeImpl>(device);

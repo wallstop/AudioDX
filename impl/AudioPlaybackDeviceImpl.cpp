@@ -136,7 +136,8 @@ namespace AudioDX
             return false;
         }
 
-        for(unsigned int i = 0; i < trueSize; ++i)
+        for(unsigned int i = 0; i < trueSize
+            ; ++i)
             data[i] = myBuffer.at(i);
         //memcpy(data, myBuffer.data(), trueSize);
 

@@ -40,7 +40,7 @@ namespace AudioDX
         m_audioFormat.bitsPerSample		= waveFormat->wBitsPerSample;
 
         // Try to intialize our audio client
-        ok = m_client->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_LOOPBACK,
+        ok = m_client->Initialize(AUDCLNT_SHAREMODE_SHARED, 0,
             0, 0, waveFormat, 0);
         CoTaskMemFree(waveFormat);  // nullptrs are ok here
         if(ok < 0)

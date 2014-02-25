@@ -26,11 +26,11 @@ namespace AudioDX
     bool AbstractAudioDeviceImpl::initialize(TaskableCallback* callback)
     {
         // Make sure we only initialize once
-		if(!m_mmDevice || m_initialized)
-		{
-			// Need an mmDevice handle to proceed
-			return false;
-		}
+        if(!m_mmDevice || m_initialized)
+        {
+            // Need an mmDevice handle to proceed
+            return false;
+        }
 
         // Grab our AudioClient
         int ok = m_mmDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, NULL,
