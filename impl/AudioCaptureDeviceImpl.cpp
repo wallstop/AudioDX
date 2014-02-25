@@ -23,34 +23,8 @@ namespace AudioDX
         if(!AbstractAudioDeviceImpl::initialize(callback))
             return false;
 
-        // Setup our wave format
-        WAVEFORMATEX *waveFormat = nullptr;
-        int ok = m_client->GetMixFormat(&waveFormat);
-		if(ok < 0 || !waveFormat)
-        {
-            // Unable to get the device's audio format
-            //releaseDevice(m_client);
-            CoTaskMemFree(waveFormat);
-            return false;
-        }
-
-        m_audioFormat.channels			= waveFormat->nChannels;
-        m_audioFormat.samplesPerSecond	= waveFormat->nSamplesPerSec;
-        m_audioFormat.bitsPerBlock		= waveFormat->nBlockAlign;
-        m_audioFormat.bitsPerSample		= waveFormat->wBitsPerSample;
-
-        // Try to intialize our audio client
-        ok = m_client->Initialize(AUDCLNT_SHAREMODE_SHARED, 0,
-            0, 0, waveFormat, 0);
-        CoTaskMemFree(waveFormat);  // nullptrs are ok here
-        if(ok < 0)
-        {
-            // Unable to properly initialize IAudioClient
-            return false;
-        }
-
         // Try and actually get a handle to the captureClient
-        ok = m_client->GetService(__uuidof(IAudioCaptureClient),
+        int ok = m_client->GetService(__uuidof(IAudioCaptureClient),
             reinterpret_cast<void** >(&m_captureClient));
         if(ok < 0 || !m_captureClient)
         {

@@ -27,34 +27,7 @@ namespace AudioDX
         if(!AbstractAudioDeviceImpl::initialize(callback))
             return false;
 
-        // Setup our wave format
-        WAVEFORMATEX *waveFormat = nullptr;
-        int ok = m_client->GetMixFormat(&waveFormat);
-        if(ok < 0 || !waveFormat)
-        {
-            // Unable to get the device's audio format
-            releaseDevice(m_client);
-            CoTaskMemFree(waveFormat);
-            return false;
-        }
-
-        m_audioFormat.channels          = waveFormat->nChannels;
-        m_audioFormat.samplesPerSecond  = waveFormat->nSamplesPerSec;
-        m_audioFormat.bitsPerBlock      = waveFormat->nBlockAlign;
-        m_audioFormat.bitsPerSample     = waveFormat->wBitsPerSample;
-
-        // Try to intialize our audio client
-        ok = m_client->Initialize(AUDCLNT_SHAREMODE_SHARED, 0,
-            0, 0, waveFormat, 0);
-        CoTaskMemFree(waveFormat);  // nullptrs are ok here
-        if(ok < 0)
-        {
-            // Unable to properly initialize IAudioClient
-            releaseDevice(m_client);
-            return false;
-        }
-
-        ok = m_client->GetService(__uuidof(IAudioRenderClient),
+        int ok = m_client->GetService(__uuidof(IAudioRenderClient),
             reinterpret_cast<void** >(&m_playbackClient));
         if(ok < 0)
         {
@@ -116,6 +89,12 @@ namespace AudioDX
             return false;
         }
 
+        if(bytesPadded > sizeOfBuffer)
+        {
+            // Woops, we've been writing too much!
+            return false;
+        }
+
         sizeOfBuffer -= bytesPadded;
         ok = m_playbackClient->GetBuffer(sizeOfBuffer, &data);
         if(ok < 0)
@@ -129,17 +108,15 @@ namespace AudioDX
         const size_t outSize = determineBufferSize(in, m_audioFormat);
         AudioBuffer myBuffer(m_audioFormat, outSize);
         const bool transformOk = filter.transformBuffer(in, myBuffer);
-        unsigned int trueSize = sizeOfBuffer < outSize? sizeOfBuffer : outSize;
+        const unsigned int trueSize = sizeOfBuffer < outSize? sizeOfBuffer : outSize;
         if(!transformOk)
         {
             m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
             return false;
         }
 
-        for(unsigned int i = 0; i < trueSize
-            ; ++i)
+        for(size_t i = 0; i < trueSize; ++i)
             data[i] = myBuffer.at(i);
-        //memcpy(data, myBuffer.data(), trueSize);
 
         ok = m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
         if(ok < 0)

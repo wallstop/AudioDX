@@ -15,13 +15,14 @@ namespace AudioDX
     }
 
     AudioBuffer::AudioBuffer(const AudioBuffer& copy) 
-        : m_size(copy.m_size), m_memory(new AudioByte[copy.m_size])
+        : m_size(copy.m_size), m_memory(new AudioByte[copy.m_size]), m_format(copy.m_format)
     {
         memcpy(m_memory.get(), copy.m_memory.get(), copy.m_size * sizeof(AudioByte));
     }
 
     AudioBuffer::AudioBuffer(AudioBuffer&& move) : m_size(move.m_size), m_memory(std::move(move.m_memory)), m_format(move.m_format)
     {
+        move.m_memory = nullptr;
     }
 
     AudioBuffer::~AudioBuffer()
@@ -71,6 +72,18 @@ namespace AudioDX
         for(size_t i = 0; i < m_size; ++i)
             m_memory[i] = copy.at(i);
 
+        return *this;
+    }
+
+    AudioBuffer& AudioBuffer::operator=(AudioBuffer&& move)
+    {
+        m_size = move.m_size;
+        m_format = move.m_format;
+        auto ptr = m_memory.release();
+        if(ptr)
+            delete ptr;
+        m_memory = std::move(move.m_memory);
+        move.m_memory = nullptr;
         return *this;
     }
 

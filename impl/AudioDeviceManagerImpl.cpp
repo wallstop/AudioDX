@@ -24,7 +24,7 @@ namespace AudioDX
         static IMMDeviceEnumerator* enumerator = nullptr;
         if(!enumerator)
         {
-            int ok = CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr,
+            int ok = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL,
                 CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), reinterpret_cast<void** >(&enumerator));
             if(ok < 0)
             {
@@ -53,7 +53,7 @@ namespace AudioDX
             result = CoInitialize(nullptr);
             m_initialized = result >= 0;
 
-            enumerateAllDevices();
+            //enumerateAllDevices();
         }
 		return m_initialized;
 	}
@@ -92,6 +92,7 @@ namespace AudioDX
 
         IMMDeviceCollection* deviceCollection = nullptr;
         int ok = deviceEnumerator->EnumAudioEndpoints(flowType, DEVICE_STATE_ACTIVE, &deviceCollection);
+        releaseDevice(deviceEnumerator);
         if(ok < 0 || !deviceCollection)
         {
             releaseDevice(deviceCollection);
@@ -122,6 +123,7 @@ namespace AudioDX
             captureDevice->impl = captureImpl;
             m_devices.insert(captureDevice);
         }
+        releaseDevice(deviceCollection);
     }
 
     void AudioDeviceManagerImpl::enumeratePlaybackDevices()
@@ -158,7 +160,7 @@ namespace AudioDX
 
     std::shared_ptr<AudioCaptureDevice> AudioDeviceManagerImpl::getDefaultCaptureDevice() const
     {
-        return getDefaultDeviceOfType<AudioCaptureDevice, AudioCaptureDeviceImpl, eCapture, eMultimedia>();
+        return getDefaultDeviceOfType<AudioCaptureDevice, AudioCaptureDeviceImpl, eCapture, eConsole>();
     }
 
     std::shared_ptr<AudioPlaybackDevice> AudioDeviceManagerImpl::getDefaultPlaybackDevice() const
@@ -211,6 +213,7 @@ namespace AudioDX
 
         IMMDevice *device = nullptr;
         int ok = deviceEnumerator->GetDefaultAudioEndpoint(flowType, role, &device);
+        releaseDevice(deviceEnumerator);
         if(ok < 0 || !device)
         {
             // Couldn't get the default playback device for some reason
@@ -236,7 +239,9 @@ namespace AudioDX
                     // Make sure we're not returning a handle to the wrong kind of device
                     auto ret = std::dynamic_pointer_cast<DeviceType>(*deviceItr);
                     if(ret)
+                    {
                         return ret;
+                    }
                 }
                 // If we get here, we *DO* want to continue - we might have a good handle elsewhere
             }

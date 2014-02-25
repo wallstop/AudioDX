@@ -22,6 +22,7 @@ namespace AudioDX
         virtual ~AudioBuffer();
   
         AudioByte&          operator[](size_t index);
+        AudioBuffer&        operator=(AudioBuffer&& move);
         AudioByte           at(size_t index) const;
         AudioFormat         getAudioFormat() const;
         void                setAudioFormat(const AudioFormat&);
