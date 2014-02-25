@@ -83,17 +83,17 @@ namespace AudioDX
         }
 
         // TODO: Some logic / error handling based off of flag return values. Skipping that for now.
-        AudioBuffer ret(m_audioFormat, numFramesToRead * m_audioFormat.bitsPerBlock);
+        AudioBuffer ret(m_audioFormat, numFramesToRead * m_audioFormat.bitsPerSample);
 
         // TODO: Think about adding some kind of bulk-inserter?
-        for(size_t i = 0; i < numFramesToRead * m_audioFormat.bitsPerBlock; ++i)
+        for(size_t i = 0; i < numFramesToRead * m_audioFormat.bitsPerSample; ++i)
             ret[i] = data[i];
 
         ok = m_captureClient->ReleaseBuffer(numFramesToRead);
         if(ok < 0)
         {
             // Seriously? It failed here? How?
-            stop();
+            //stop();
             bool breakPoint = false;
         }
 
