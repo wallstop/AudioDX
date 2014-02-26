@@ -20,11 +20,52 @@ namespace AudioDX
 
     bool AudioCaptureDeviceImpl::initialize(TaskableCallback* callback)
     {
-        if(!AbstractAudioDeviceImpl::initialize(callback))
+       // Make sure we only initialize once
+        if(!m_mmDevice || m_initialized)
+        {
+            // Need an mmDevice handle to proceed
             return false;
+        }
+
+        // Grab our AudioClient
+        int ok = m_mmDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, NULL,
+            reinterpret_cast<void** >(&m_client));
+        if(ok < 0 || !m_client)
+        {
+            // Unable to get an IAudioClient handle
+            releaseDevice(m_client);
+            return false;
+        }
+
+        // Setup our wave format
+        WAVEFORMATEX *waveFormat = nullptr;
+        ok = m_client->GetMixFormat(&waveFormat);
+		if(ok < 0 || !waveFormat)
+        {
+            // Unable to get the device's audio format
+            releaseDevice(m_client);
+            CoTaskMemFree(waveFormat);
+            return false;
+        }
+
+        m_audioFormat.channels			= waveFormat->nChannels;
+        m_audioFormat.samplesPerSecond	= waveFormat->nSamplesPerSec;
+        m_audioFormat.bitsPerBlock		= waveFormat->nBlockAlign;
+        m_audioFormat.bitsPerSample		= waveFormat->wBitsPerSample;
+
+        // Try to intialize our audio client
+        ok = m_client->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_LOOPBACK,
+            10000000, 0, waveFormat, 0);
+        CoTaskMemFree(waveFormat);  // nullptrs are ok here
+        if(ok < 0)
+        {
+            // Unable to properly initialize IAudioClient
+            releaseDevice(m_client);
+            return false;
+        }
 
         // Try and actually get a handle to the captureClient
-        int ok = m_client->GetService(__uuidof(IAudioCaptureClient),
+        ok = m_client->GetService(__uuidof(IAudioCaptureClient),
             reinterpret_cast<void** >(&m_captureClient));
         if(ok < 0 || !m_captureClient)
         {
@@ -57,7 +98,9 @@ namespace AudioDX
 
         // See if there's any data we can get
         unsigned int numFramesToRead = 0;
-        int ok = m_captureClient->GetNextPacketSize(&numFramesToRead);
+        int ok =  0;
+        size_t framesRead;
+        ok = m_captureClient->GetNextPacketSize(&numFramesToRead);
         //int ok = m_captureClient->GetNextPacketSize(&numFramesToRead);
         if(ok < 0)
         {
@@ -83,10 +126,10 @@ namespace AudioDX
         }
 
         // TODO: Some logic / error handling based off of flag return values. Skipping that for now.
-        AudioBuffer ret(m_audioFormat, numFramesToRead * m_audioFormat.bitsPerSample);
+        AudioBuffer ret(m_audioFormat, numFramesToRead * m_audioFormat.bitsPerBlock);
 
         // TODO: Think about adding some kind of bulk-inserter?
-        for(size_t i = 0; i < numFramesToRead * m_audioFormat.bitsPerSample; ++i)
+        for(size_t i = 0; i < numFramesToRead * m_audioFormat.bitsPerBlock; ++i)
             ret[i] = data[i];
 
         ok = m_captureClient->ReleaseBuffer(numFramesToRead);

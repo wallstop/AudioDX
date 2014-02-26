@@ -115,7 +115,7 @@ namespace AudioDX
             return false;
         }
 
-        for(size_t i = 0; i < trueSize; ++i)
+        for(unsigned int i = 0; i < trueSize; ++i)
             data[i] = myBuffer.at(i);
 
         ok = m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);

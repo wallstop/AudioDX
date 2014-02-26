@@ -160,7 +160,7 @@ namespace AudioDX
 
     std::shared_ptr<AudioCaptureDevice> AudioDeviceManagerImpl::getDefaultCaptureDevice() const
     {
-        return getDefaultDeviceOfType<AudioCaptureDevice, AudioCaptureDeviceImpl, eCapture, eConsole>();
+        return getDefaultDeviceOfType<AudioCaptureDevice, AudioCaptureDeviceImpl, eRender, eConsole>();
     }
 
     std::shared_ptr<AudioPlaybackDevice> AudioDeviceManagerImpl::getDefaultPlaybackDevice() const
