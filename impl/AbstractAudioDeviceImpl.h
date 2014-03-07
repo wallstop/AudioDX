@@ -1,9 +1,10 @@
 
 #pragma once
 
-#include <AudioDX/AbstractAudioDevice.h>
-#include <AudioDX/AudioFormat.h>
-#include <AudioDX/Utilities/TaskableCallback.h>
+#include "../AbstractAudioDevice.h"
+#include "../AudioFormat.h"
+#include "../Tasks/TaskCallback.h"
+#include "../AudioStream.h"
 
 #ifdef WIN32
 
@@ -23,7 +24,7 @@ namespace AudioDX
 #define releaseDevice(device)   \
     if((device)) { (device)->Release(); (device) = nullptr; }
 
-    class AudioBuffer;
+    class AudioPacket;
     struct AbstractFilter;
 
     class AbstractAudioDeviceImpl
@@ -33,30 +34,35 @@ namespace AudioDX
         AbstractAudioDeviceImpl(IMMDevice *mmDevice);
         virtual ~AbstractAudioDeviceImpl();
 
-        virtual bool        initialize(TaskableCallback *callback = nullptr) = 0;
+        virtual bool        initialize(TaskCallback *callback = nullptr) = 0;
 
+        // TODO: Make start() and stop() pure virtual
         virtual bool        start();
         virtual bool        isStarted() const;
         virtual bool        stop();
         virtual bool        isStopped() const;
 
         virtual AudioFormat getAudioFormat() const;
-        virtual AudioBuffer readFromBuffer() = 0;
-        virtual bool        writeToBuffer(const AudioBuffer& in, const AbstractFilter& filter) = 0;
+        virtual AudioPacket readFromBuffer() = 0;
+        virtual bool        readFromBuffer(AudioStream& out, TaskCallback* callback = nullptr) = 0;
+        virtual bool        writeToBuffer(const AudioPacket& in, const AbstractFilter& filter) = 0;
+        virtual bool        writeToBuffer(AudioStream& in, const AbstractFilter& filter, TaskCallback* callback) = 0;
 
         virtual bool        isValid() const;
 
 
     protected:
-        IMMDevice* m_mmDevice;
-        IAudioClient *m_client;
+        IMMDevice*          m_mmDevice;
+        IAudioClient*       m_client;
 
-        AudioFormat m_audioFormat;
+        AudioFormat         m_audioFormat;
 
-        bool m_initialized;
+        long long           m_referenceTime;
+
+        bool                m_initialized;
         // Having one boolean to control for isStarted or isStopped could lead to some
         // wonky states.. What about an uninitialized device? 
-        bool m_started;
+        bool                m_started;
 
         friend class AudioDeviceManagerImpl;
 

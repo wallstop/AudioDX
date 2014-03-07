@@ -12,7 +12,7 @@ namespace AudioDX
     {
     }
 
-    void AudioSilenceTask::run(TaskableCallback *callback)
+    void AudioSilenceTask::run(TaskCallback *callback)
     {
         if(!m_device)
             return;

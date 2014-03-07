@@ -13,7 +13,7 @@ namespace AudioDX
         AudioSilenceTask();
         ~AudioSilenceTask();
 
-        void run(TaskableCallback *callback = nullptr);
+        void run(TaskCallback *callback = nullptr);
 
     private:
 

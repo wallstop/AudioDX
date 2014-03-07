@@ -1,7 +1,7 @@
 
 #include <AudioDX/AudioCaptureDevice.h>
 #include <AudioDX/impl/AudioCaptureDeviceImpl.h>
-#include <AudioDX/AudioBuffer.h>
+#include <AudioDX/AudioPacket.h>
 
 namespace AudioDX
 {
@@ -24,16 +24,25 @@ namespace AudioDX
         return true;
     }
 
-    AudioBuffer AudioCaptureDevice::readFromBuffer()
+    AudioPacket AudioCaptureDevice::readFromBuffer()
     {
         if(impl)
             return impl->readFromBuffer();
         return BAD_BUFFER;
     }
 
-    bool AudioCaptureDevice::writeToBuffer(const AudioBuffer& in, const AbstractFilter& filter)
+    bool AudioCaptureDevice::readFromBuffer(AudioStream& out, TaskCallback* callback)
+    {
+        return (impl && impl->readFromBuffer(out, callback));
+    }
+
+    bool AudioCaptureDevice::writeToBuffer(const AudioPacket& in, const AbstractFilter& filter)
     {
         return (impl && impl->writeToBuffer(in, filter));
     }
 
+    bool AudioCaptureDevice::writeToBuffer(AudioStream& in, const AbstractFilter& filter, TaskCallback* callback)
+    {
+        return (impl && impl->writeToBuffer(in, filter, callback));
+    }
 }

@@ -8,7 +8,7 @@ namespace AudioDX
 {
 
     class AudioPlaybackDeviceImpl;
-    class AudioBuffer;
+    class AudioPacket;
 
     class AudioPlaybackDevice : public AbstractAudioDevice
     {
@@ -21,8 +21,10 @@ namespace AudioDX
 
         virtual bool        isPlaybackDevice() const;
 
-        virtual bool        writeToBuffer(const AudioBuffer& in, const AbstractFilter& filter = AbstractFilter());
-        virtual AudioBuffer readFromBuffer();
+        virtual bool        writeToBuffer(const AudioPacket& in, const AbstractFilter& filter = AbstractFilter());
+        virtual bool        writeToBuffer(AudioStream& in, const AbstractFilter& filter = AbstractFilter(), TaskCallback* callback = nullptr);
 
+        virtual AudioPacket readFromBuffer();
+        virtual bool        readFromBuffer(AudioStream& out, TaskCallback* callback = nullptr);
     };
 }

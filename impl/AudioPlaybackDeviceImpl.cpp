@@ -1,7 +1,10 @@
 
 #include <AudioDX/impl/AudioPlaybackDeviceImpl.h>
-#include <AudioDX/AudioBuffer.h>
+#include <AudioDX/AudioPacket.h>
 #include <AudioDX/Filters/AbstractFilter.h>
+
+#include <iostream>
+#include <thread>
 
 namespace AudioDX
 {
@@ -22,7 +25,7 @@ namespace AudioDX
         releaseDevice(m_playbackClient);
     }
 
-    bool AudioPlaybackDeviceImpl::initialize(TaskableCallback* callback)
+    bool AudioPlaybackDeviceImpl::initialize(TaskCallback* callback)
     {
         if(!AbstractAudioDeviceImpl::initialize(callback))
             return false;
@@ -43,12 +46,17 @@ namespace AudioDX
         return true;
 	}
 
-    AudioBuffer AudioPlaybackDeviceImpl::readFromBuffer() 
+    AudioPacket AudioPlaybackDeviceImpl::readFromBuffer() 
     {
         return BAD_BUFFER;
     }
 
-    bool AudioPlaybackDeviceImpl::writeToBuffer(const AudioBuffer& in, const AbstractFilter& filter)
+    bool AudioPlaybackDeviceImpl::readFromBuffer(AudioStream& out, TaskCallback* callback)
+    {
+        return false;
+    }
+
+    bool AudioPlaybackDeviceImpl::writeToBuffer(const AudioPacket& in, const AbstractFilter& filter)
     {
         if(!isStarted())
         {
@@ -106,9 +114,9 @@ namespace AudioDX
 
         // We have to do some size calculations to get the appropriately sized buffer from whatever is passed in
         const size_t outSize = determineBufferSize(in, m_audioFormat);
-        AudioBuffer myBuffer(m_audioFormat, outSize);
-        const bool transformOk = filter.transformBuffer(in, myBuffer);
-        const unsigned int trueSize = sizeOfBuffer < outSize? sizeOfBuffer : outSize;
+        AudioPacket myBuffer(m_audioFormat, outSize);
+        const bool transformOk = filter.transformPacket(in, myBuffer);
+        const size_t trueSize = sizeOfBuffer < outSize? sizeOfBuffer : outSize;
         if(!transformOk)
         {
             m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
@@ -125,6 +133,131 @@ namespace AudioDX
         }
 
         return true;
+    }
+
+    bool AudioPlaybackDeviceImpl::writeToBuffer(AudioStream& in, const AbstractFilter& filter, TaskCallback* callback)
+    {
+        if(!isStarted())
+        {
+            // Someone called this method without starting. Let's see what we can do...
+            start();
+            // Now, if we're still not started, bail
+            if(!isStarted())
+                return false;
+        }
+
+        if(!m_initialized)
+        {
+            // If we're not initialized here, we can't proceed. Bail out
+            return false;
+        }
+
+        if(!m_client || !m_playbackClient)
+        {
+            // Something's wrong with our playbackClient - we don't have one!
+            return false;
+        }
+
+        bool continueWriting = true;
+        if(callback)
+            continueWriting = !callback->isTaskStopped();
+
+        const size_t maxPacketsFallback = 100000;   // Arbitrary
+        size_t packetsWritten = 0;
+
+        while(true)
+        {
+            //std::this_thread::sleep_for(std::chrono::microseconds(m_referenceTime /2 ));
+            unsigned int sizeOfBuffer = 0;
+            int ok = m_client->GetBufferSize(&sizeOfBuffer);
+            if(ok < 0)
+            {
+                // Something went wrong with getting the buffer size (...how?)
+                return false;
+            }
+
+            unsigned int bitsPadded = 0;
+            ok = m_client->GetCurrentPadding(&bitsPadded);
+            if(ok < 0)
+            {
+                // Something went wrong with getting the amount ofpadding (...how?)
+                return false;
+            }
+
+            if(bitsPadded >= sizeOfBuffer)
+            {
+                // Woops, we've been writing too much!
+                continue;
+            }
+
+            AudioByte *data = nullptr;
+            sizeOfBuffer -= bitsPadded;
+            ok = m_playbackClient->GetBuffer(sizeOfBuffer, &data);
+            if(ok < 0)
+            {
+                // Something went wrong with grabbing a pointer to the buffer. That's no good.
+                m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0); // Should we be releasing this here? Do we care?
+                return false;
+            }
+
+            //AudioFormat inFormat = in.getAudioFormat();
+            bool gotData = true;
+            //while(data && gotData && bytesWritten <= sizeOfBuffer)
+            //{
+            AudioPacket inPacket;
+            gotData = !in.isEmpty();
+            if(!gotData)
+            {
+                m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
+                continue;
+            }
+
+            gotData = in.pop(inPacket);
+            if(!gotData)
+            {
+                // Something went wrong here
+                m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
+                continue;
+            }
+
+            const unsigned int originalBufferSize = sizeOfBuffer;
+            sizeOfBuffer *= m_audioFormat.bitsPerBlock;
+
+            if(inPacket.size() > sizeOfBuffer)
+            {
+                m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
+                continue;
+            }
+            const size_t outSize = determineBufferSize(inPacket, m_audioFormat);
+            AudioPacket outPacket(m_audioFormat, outSize);
+            const bool transformOk = filter.transformPacket(inPacket, outPacket);
+            if(!transformOk)
+            {
+                m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
+                std::cout << "YOU DONE FUCKED UP NOW BOY" << std::endl;
+                return false;
+            }
+
+            const unsigned int bytesToCopy = outPacket.size() > sizeOfBuffer ? sizeOfBuffer : outPacket.size();
+            memcpy(data, outPacket.data(), bytesToCopy);
+
+            // Bump the buffer pointer
+            //data = data + outPacket.size();
+            // bytesWritten += outPacket.size();
+            gotData = gotData && (continueWriting = (callback ? !callback->isTaskStopped() : ++packetsWritten < maxPacketsFallback));
+            //}
+
+            ok = m_playbackClient->ReleaseBuffer(originalBufferSize, 0);
+            if(ok < 0)
+            {
+                // Some error occured, but by now, we don't care about it...
+            }
+
+            continueWriting = (ok >= 0) && (callback ? !callback->isTaskStopped() : packetsWritten < maxPacketsFallback);
+        }
+
+        return true;
+
     }
 
 #endif

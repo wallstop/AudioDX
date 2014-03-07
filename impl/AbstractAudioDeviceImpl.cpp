@@ -23,7 +23,7 @@ namespace AudioDX
         releaseDevice(m_mmDevice);
     }
 
-    bool AbstractAudioDeviceImpl::initialize(TaskableCallback* callback)
+    bool AbstractAudioDeviceImpl::initialize(TaskCallback* callback)
     {
         // Make sure we only initialize once
         if(!m_mmDevice || m_initialized)
@@ -38,6 +38,13 @@ namespace AudioDX
         if(ok < 0 || !m_client)
         {
             // Unable to get an IAudioClient handle
+            releaseDevice(m_client);
+            return false;
+        }
+
+        ok = m_client->GetDevicePeriod(&m_referenceTime, NULL);
+        if(ok < 0)
+        {
             releaseDevice(m_client);
             return false;
         }
@@ -59,8 +66,8 @@ namespace AudioDX
         m_audioFormat.bitsPerSample		= waveFormat->wBitsPerSample;
 
         // Try to intialize our audio client
-        ok = m_client->Initialize(AUDCLNT_SHAREMODE_SHARED, 0,
-            10000000, 0, waveFormat, 0);
+        ok = m_client->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, 
+            0, 0, waveFormat, 0);
         CoTaskMemFree(waveFormat);  // nullptrs are ok here
         if(ok < 0)
         {

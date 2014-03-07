@@ -7,7 +7,7 @@ namespace AudioDX
 {
 
     class AudioCaptureDeviceImpl;
-    class AudioBuffer;
+    class AudioPacket;
 
     class AudioCaptureDevice : public AbstractAudioDevice
     {
@@ -20,8 +20,10 @@ namespace AudioDX
 
         virtual bool        isCaptureDevice() const;
 
-        virtual AudioBuffer readFromBuffer();
-        virtual bool        writeToBuffer(const AudioBuffer& in, const AbstractFilter& filter);
+        virtual AudioPacket readFromBuffer();
+        virtual bool        readFromBuffer(AudioStream& out, TaskCallback* callback);
+        virtual bool        writeToBuffer(const AudioPacket& in, const AbstractFilter& filter);
+        virtual bool        writeToBuffer(AudioStream& in, const AbstractFilter& filter, TaskCallback* callback);
 
     };
 

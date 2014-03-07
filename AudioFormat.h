@@ -8,10 +8,10 @@ namespace AudioDX
 
     struct AudioFormat
     {
-        unsigned int channels;
-        unsigned int samplesPerSecond;
-        unsigned int bitsPerBlock;
-        unsigned int bitsPerSample;
+        unsigned short  channels;
+        unsigned int    samplesPerSecond;
+        unsigned short  bitsPerBlock;
+        unsigned int    bitsPerSample;
 
         bool operator==(const AudioFormat& other) const;
         bool operator!=(const AudioFormat& other) const;

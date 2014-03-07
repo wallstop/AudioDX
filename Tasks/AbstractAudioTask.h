@@ -2,7 +2,7 @@
 #pragma once
 
 #include <AudioDX/AbstractAudioDevice.h>
-#include <AudioDX/Utilities/TaskableCallback.h>
+#include <AudioDX/Tasks/TaskCallback.h>
 
 namespace AudioDX
 {
@@ -23,7 +23,7 @@ namespace AudioDX
 		{
 		}
 
-		virtual void run(TaskableCallback *callback = nullptr) = 0;
+		virtual void run(TaskCallback *callback = nullptr) = 0;
 
 	protected:
 

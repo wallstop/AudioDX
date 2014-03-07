@@ -1,37 +1,49 @@
 
-#include <AudioDX/AudioBuffer.h>
+#include <AudioDX/AudioPacket.h>
 
+#include <assert.h>
 #include <stdexcept>
 
 namespace AudioDX
 {
-    AudioBuffer::AudioBuffer(size_t size) : m_size(size), m_memory(new AudioByte[size])
+    AudioPacket::AudioPacket(size_t size) : m_size(size), m_memory(nullptr)
     {
+        assert(m_size > 0);
+        m_memory = new AudioByte[size];
     }
 
-    AudioBuffer::AudioBuffer(const AudioFormat& format, size_t size) 
-        : m_size(size), m_memory(new AudioByte[size]), m_format(format)
+    AudioPacket::AudioPacket(const AudioFormat& format, size_t size) 
+        : m_size(size), m_memory(nullptr), m_format(format)
     {
+        assert(m_size > 0);
+        m_memory = new AudioByte[size];
     }
 
-    AudioBuffer::AudioBuffer(const AudioBuffer& copy) 
-        : m_size(copy.m_size), m_memory(new AudioByte[copy.m_size]), m_format(copy.m_format)
+    AudioPacket::AudioPacket(const AudioPacket& copy) 
+        : m_size(copy.m_size), m_memory(nullptr), m_format(copy.m_format)
     {
-        for(size_t i = 0; i < m_size; ++i)
-            m_memory[i] = copy.m_memory[i];
+        assert(copy.m_size > 0);
+        if(copy.m_size > 0)
+        {
+            m_memory = new AudioByte[copy.m_size];
+            std::memcpy(m_memory, copy.m_memory, copy.m_size * sizeof(AudioByte));
+        }
     }
 
-    AudioBuffer::AudioBuffer(AudioBuffer&& move) : m_size(move.m_size), m_memory(std::move(move.m_memory)), m_format(move.m_format)
+    AudioPacket::AudioPacket(AudioPacket&& move) : m_size(0), m_memory(nullptr)
     {
-        move.m_memory = nullptr;
+        // rely on our operator=(AudioPacket&&)
+        *this = move;
     }
 
-    AudioBuffer::~AudioBuffer()
+    AudioPacket::~AudioPacket()
     {
+        delete[] m_memory;
     }
 
-    AudioByte& AudioBuffer::operator[](size_t index)
+    AudioByte& AudioPacket::operator[](size_t index)
     {
+        assert(m_memory);
         if(index >= m_size)
         {
             throw std::out_of_range("");
@@ -40,70 +52,70 @@ namespace AudioDX
         return m_memory[index];
     }
 
-    AudioByte AudioBuffer::at(size_t index) const
+    AudioByte AudioPacket::at(size_t index) const
     {
+        assert(m_memory);
         if(index >= m_size)
             return AudioByte();
         return m_memory[index];    
     }
 
-    AudioFormat AudioBuffer::getAudioFormat() const
+    AudioFormat AudioPacket::getAudioFormat() const
     {
         return m_format;
     }
 
-    void AudioBuffer::setAudioFormat(const AudioFormat& format)
+    void AudioPacket::setAudioFormat(const AudioFormat& format)
     {
         m_format = format;
     }
 
-    bool AudioBuffer::isValid() const
+    bool AudioPacket::isValid() const
     {
         return (m_memory != nullptr && m_format != AudioFormat());
     }
 
-    AudioBuffer& AudioBuffer::operator=(const AudioBuffer& copy)
+    AudioPacket& AudioPacket::operator=(const AudioPacket& copy)
     {
+        assert(copy.m_size > 0);
+        delete[] m_memory;
+        m_memory = new AudioByte[copy.m_size];
+
         m_size = copy.m_size;
         m_format = copy.m_format;
-        auto ptr = m_memory.release();
-        if(ptr)
-            delete ptr;
-        m_memory = std::unique_ptr<AudioByte[]>(new AudioByte[m_size]);
-        for(size_t i = 0; i < m_size; ++i)
-            m_memory[i] = copy.at(i);
+        
+        std::memcpy(m_memory, copy.m_memory, m_size * sizeof(AudioByte));
 
         return *this;
     }
 
-    AudioBuffer& AudioBuffer::operator=(AudioBuffer&& move)
+    AudioPacket& AudioPacket::operator=(AudioPacket&& move)
     {
         m_size = move.m_size;
         m_format = move.m_format;
-        auto ptr = m_memory.release();
-        if(ptr)
-            delete ptr;
-        m_memory = std::move(move.m_memory);
+        m_memory = move.m_memory ? std::move(move.m_memory) : nullptr;
         move.m_memory = nullptr;
+        move.m_size = 0;
         return *this;
     }
 
-    const AudioByte* AudioBuffer::data() const
+    // risky
+    AudioByte* AudioPacket::data()
     {
-        return m_memory.get();
+        return m_memory;
     }
 
-    size_t AudioBuffer::size() const
+    size_t AudioPacket::size() const
     {
         return m_size;
     }
 
-    size_t determineBufferSize(const AudioBuffer& in, const AudioFormat& outFormat)
+    size_t determineBufferSize(const AudioPacket& in, const AudioFormat& outFormat)
     {
         const unsigned int numInSamples     = in.getAudioFormat().samplesPerSecond;
         const unsigned int numOutSamples    = outFormat.samplesPerSecond;
 
-        const double ratio = double(numInSamples) / double(numOutSamples);
+        const double ratio = double(numOutSamples) / double(numInSamples);
 
         return size_t(ratio * in.size());
     }

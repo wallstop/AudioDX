@@ -11,45 +11,44 @@ namespace AudioDX
     // TODO: Handle endianess
     // TODO: Think about adding some kind of framing information?
     // TODO: Think about adding some kind of bulk inserter?
-    class AudioBuffer
+    class AudioPacket
     {
     public:
-        
-        AudioBuffer(size_t size = 0);
-        AudioBuffer(const AudioFormat& format, size_t size = 0);
-        AudioBuffer(const AudioBuffer& copy);
-        AudioBuffer(AudioBuffer&& move);
-        virtual ~AudioBuffer();
-  
-        AudioByte&          operator[](size_t index);
-        AudioBuffer&        operator=(AudioBuffer&& move);
-        AudioByte           at(size_t index) const;
-        AudioFormat         getAudioFormat() const;
-        void                setAudioFormat(const AudioFormat&);
 
-        size_t              size() const;
-        bool                isValid() const;
+        #ifndef DEFAULT_PACKET_SIZE
+            #define DEFAULT_PACKET_SIZE 10
+        #endif
+        
+        AudioPacket(size_t size = DEFAULT_PACKET_SIZE);
+        AudioPacket(const AudioFormat& format, size_t size = DEFAULT_PACKET_SIZE);
+        AudioPacket(const AudioPacket& copy);
+        AudioPacket(AudioPacket&& move);
+        virtual ~AudioPacket();
+  
+        AudioByte&      operator[](size_t index);
+        AudioPacket&    operator=(AudioPacket&& move);
+        // Don't use this, AudioPackets should only be copyable on creation
+        // Copies are expensive since we're dealing almost exclusively with the heap
+        AudioPacket&    operator=(const AudioPacket& copy);
+        AudioByte       at(size_t index) const;
+        AudioFormat     getAudioFormat() const;
+        void            setAudioFormat(const AudioFormat&);
+
+        size_t          size() const;
+        bool            isValid() const;
+
+        // Hope you know what you're doing
+        AudioByte*      data();
 
     private:
-        // Don't use this, AudioBuffers should only be copyable on creation
-        // Copies are expensive since we're dealing almost exclusively with the heap
-        AudioBuffer&        operator=(const AudioBuffer& copy);
+        size_t          m_size;        
+        AudioByte*      m_memory;
+        AudioFormat     m_format;
 
-        // I hope you know what you're doing here...
-        const AudioByte*    data() const;
-
-        size_t                          m_size;        
-        std::unique_ptr<AudioByte[]>    m_memory;
-        AudioFormat                     m_format;
-
-        // Our impls need to copy them, though
-        friend class AbstractAudioDeviceImpl;
-        friend class AudioCaptureDeviceImpl;
-        friend class AudioPlaybackDeviceImpl;
     };
 
-    size_t  determineBufferSize(const AudioBuffer& in, const AudioFormat& outFormat);
+    size_t  determineBufferSize(const AudioPacket& in, const AudioFormat& outFormat);
 
-    const AudioBuffer BAD_BUFFER;
+    static const AudioPacket BAD_BUFFER;
 
 }

@@ -17,11 +17,13 @@ namespace AudioDX
         AudioPlaybackDeviceImpl(IMMDevice* mmDevice = nullptr, IAudioRenderClient* playbackClient = nullptr);
         virtual ~AudioPlaybackDeviceImpl();
 
-        virtual bool        initialize(TaskableCallback* callback = nullptr);
+        virtual bool        initialize(TaskCallback* callback = nullptr);
 
         // TODO: Modify signature to provide error handling features
-        virtual bool        writeToBuffer(const AudioBuffer& in, const AbstractFilter& filter);
-        virtual AudioBuffer readFromBuffer();
+        virtual bool        writeToBuffer(const AudioPacket& in, const AbstractFilter& filter);
+        virtual bool        writeToBuffer(AudioStream& in, const AbstractFilter& filter, TaskCallback* callback);
+        virtual AudioPacket readFromBuffer();
+        virtual bool        readFromBuffer(AudioStream& out, TaskCallback* callback);
 
     protected:
         IAudioRenderClient*	m_playbackClient;
