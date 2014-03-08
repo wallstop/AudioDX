@@ -3,16 +3,12 @@
 #include <AudioDX/AudioPacket.h>
 #include <AudioDX/Filters/AbstractFilter.h>
 
-#include <iostream>
 #include <thread>
 
 namespace AudioDX
 {
 
 #ifdef WIN32
-
-#define REFERENCE_TIMES_PER_MILLISECOND 10000
-#define REFERENCE_TIMES_PER_SECOND 1000 * REFERENCE_TIMES_PER_MILLISECOND
 	
     AudioPlaybackDeviceImpl::AudioPlaybackDeviceImpl(IMMDevice* mmDevice, IAudioRenderClient* playbackClient) 
         : AbstractAudioDeviceImpl(mmDevice), m_playbackClient(playbackClient)
@@ -25,9 +21,9 @@ namespace AudioDX
         releaseDevice(m_playbackClient);
     }
 
-    bool AudioPlaybackDeviceImpl::initialize(TaskCallback* callback)
+    bool AudioPlaybackDeviceImpl::initialize()
     {
-        if(!AbstractAudioDeviceImpl::initialize(callback))
+        if(!AbstractAudioDeviceImpl::initialize())
             return false;
 
         int ok = m_client->GetService(__uuidof(IAudioRenderClient),
@@ -123,8 +119,7 @@ namespace AudioDX
             return false;
         }
 
-        for(unsigned int i = 0; i < trueSize; ++i)
-            data[i] = myBuffer.at(i);
+        std::memcpy(data, myBuffer.data(), trueSize);
 
         ok = m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
         if(ok < 0)
@@ -165,7 +160,7 @@ namespace AudioDX
         const size_t maxPacketsFallback = 100000;   // Arbitrary
         size_t packetsWritten = 0;
 
-        while(true)
+        while(continueWriting)
         {
             //std::this_thread::sleep_for(std::chrono::microseconds(m_referenceTime /2 ));
             unsigned int sizeOfBuffer = 0;
@@ -223,7 +218,7 @@ namespace AudioDX
             const unsigned int originalBufferSize = sizeOfBuffer;
             sizeOfBuffer *= m_audioFormat.bitsPerBlock;
 
-            if(inPacket.size() > sizeOfBuffer)
+            if(inPacket.byteSize() > sizeOfBuffer)
             {
                 m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
                 continue;
@@ -234,17 +229,17 @@ namespace AudioDX
             if(!transformOk)
             {
                 m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
-                std::cout << "YOU DONE FUCKED UP NOW BOY" << std::endl;
                 return false;
             }
 
-            const unsigned int bytesToCopy = outPacket.size() > sizeOfBuffer ? sizeOfBuffer : outPacket.size();
-            memcpy(data, outPacket.data(), bytesToCopy);
+            const unsigned int bytesToCopy = outPacket.byteSize() > sizeOfBuffer ? sizeOfBuffer : outPacket.byteSize();
+            std::memcpy(data, outPacket.data(), bytesToCopy);
+
 
             // Bump the buffer pointer
             //data = data + outPacket.size();
             // bytesWritten += outPacket.size();
-            gotData = gotData && (continueWriting = (callback ? !callback->isTaskStopped() : ++packetsWritten < maxPacketsFallback));
+            continueWriting = callback ? !callback->isTaskStopped() : ++packetsWritten < maxPacketsFallback;
             //}
 
             ok = m_playbackClient->ReleaseBuffer(originalBufferSize, 0);

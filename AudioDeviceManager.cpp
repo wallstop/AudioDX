@@ -67,4 +67,11 @@ namespace AudioDX
         return std::shared_ptr<AudioPlaybackDevice>();
     }
 
+    std::shared_ptr<AudioCaptureDevice> AudioDeviceManager::getDefaultPlaybackDeviceAsCaptureDevice() const
+    {
+        if(impl)
+            return impl->getDefaultPlaybackDeviceAsCaptureDevice();
+        return std::shared_ptr<AudioCaptureDevice>();
+    }
+
 }

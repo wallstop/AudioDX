@@ -50,4 +50,11 @@ namespace AudioDX
         return AudioFormat();
     }
 
+    std::string AbstractAudioDevice::id() const
+    {
+        if(impl)
+            return impl->id();
+        return std::string();
+    }
+
 }

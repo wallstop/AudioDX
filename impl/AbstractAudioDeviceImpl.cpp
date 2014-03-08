@@ -1,6 +1,12 @@
 
 #include <AudioDX/impl/AbstractAudioDeviceImpl.h>
 
+#ifdef WIN32
+
+#include <atlbase.h>
+
+#endif
+
 namespace AudioDX
 {
 
@@ -23,7 +29,7 @@ namespace AudioDX
         releaseDevice(m_mmDevice);
     }
 
-    bool AbstractAudioDeviceImpl::initialize(TaskCallback* callback)
+    bool AbstractAudioDeviceImpl::initialize()
     {
         // Make sure we only initialize once
         if(!m_mmDevice || m_initialized)
@@ -31,6 +37,10 @@ namespace AudioDX
             // Need an mmDevice handle to proceed
             return false;
         }
+
+        LPWSTR deviceIdAsLPWSTR;
+        m_mmDevice->GetId(&deviceIdAsLPWSTR);
+        m_id = CW2A(deviceIdAsLPWSTR);
 
         // Grab our AudioClient
         int ok = m_mmDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, NULL,
@@ -66,7 +76,7 @@ namespace AudioDX
         m_audioFormat.bitsPerSample		= waveFormat->wBitsPerSample;
 
         // Try to intialize our audio client
-        ok = m_client->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, 
+        ok = m_client->Initialize(AUDCLNT_SHAREMODE_SHARED, m_deviceMode, 
             0, 0, waveFormat, 0);
         CoTaskMemFree(waveFormat);  // nullptrs are ok here
         if(ok < 0)
@@ -124,6 +134,11 @@ namespace AudioDX
     bool AbstractAudioDeviceImpl::isValid() const
     {
         return m_initialized && (isStarted() || isStopped());
+    }
+
+    std::string AbstractAudioDeviceImpl::id() const
+    {
+        return m_id;
     }
 
     AudioFormat AbstractAudioDeviceImpl::getAudioFormat() const

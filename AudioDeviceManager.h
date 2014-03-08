@@ -26,6 +26,7 @@ namespace AudioDX
         std::vector<std::shared_ptr<AbstractAudioDevice>>   getAllDevices() const;
         std::shared_ptr<AudioCaptureDevice>                 getDefaultCaptureDevice() const;
         std::shared_ptr<AudioPlaybackDevice>                getDefaultPlaybackDevice() const;
+        std::shared_ptr<AudioCaptureDevice>                 getDefaultPlaybackDeviceAsCaptureDevice() const;
 
         bool isInitialized() const;
 

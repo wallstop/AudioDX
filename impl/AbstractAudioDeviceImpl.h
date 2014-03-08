@@ -34,7 +34,8 @@ namespace AudioDX
         AbstractAudioDeviceImpl(IMMDevice *mmDevice);
         virtual ~AbstractAudioDeviceImpl();
 
-        virtual bool        initialize(TaskCallback *callback = nullptr) = 0;
+        // TODO: Make this templated / argumented for "role" (loopback)
+        virtual bool        initialize() = 0;
 
         // TODO: Make start() and stop() pure virtual
         virtual bool        start();
@@ -49,7 +50,7 @@ namespace AudioDX
         virtual bool        writeToBuffer(AudioStream& in, const AbstractFilter& filter, TaskCallback* callback) = 0;
 
         virtual bool        isValid() const;
-
+        virtual std::string id() const;
 
     protected:
         IMMDevice*          m_mmDevice;
@@ -60,9 +61,9 @@ namespace AudioDX
         long long           m_referenceTime;
 
         bool                m_initialized;
-        // Having one boolean to control for isStarted or isStopped could lead to some
-        // wonky states.. What about an uninitialized device? 
         bool                m_started;
+        std::string         m_id;
+        int                 m_deviceMode;
 
         friend class AudioDeviceManagerImpl;
 

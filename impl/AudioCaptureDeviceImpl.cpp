@@ -20,61 +20,15 @@ namespace AudioDX
         releaseDevice(m_captureClient);
     }
 
-    bool AudioCaptureDeviceImpl::initialize(TaskCallback* callback)
+    bool AudioCaptureDeviceImpl::initialize()
     {
-       // Make sure we only initialize once
-        if(!m_mmDevice || m_initialized)
-        {
-            // Need an mmDevice handle to proceed
+        if(!AbstractAudioDeviceImpl::initialize())
             return false;
-        }
 
-        // Grab our AudioClient
-        int ok = m_mmDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, NULL,
-            reinterpret_cast<void** >(&m_client));
-        if(ok < 0 || !m_client)
-        {
-            // Unable to get an IAudioClient handle
-            releaseDevice(m_client);
-            return false;
-        }
-
-        ok = m_client->GetDevicePeriod(&m_referenceTime, NULL);
-        if(ok < 0)
-        {
-            releaseDevice(m_client);
-            return false;
-        }
-
-        // Setup our wave format
-        WAVEFORMATEX *waveFormat = nullptr;
-        ok = m_client->GetMixFormat(&waveFormat);
-		if(ok < 0 || !waveFormat)
-        {
-            // Unable to get the device's audio format
-            releaseDevice(m_client);
-            CoTaskMemFree(waveFormat);
-            return false;
-        }
-
-        m_audioFormat.channels			= waveFormat->nChannels;
-        m_audioFormat.samplesPerSecond	= waveFormat->nSamplesPerSec;
-        m_audioFormat.bitsPerBlock		= waveFormat->nBlockAlign;
-        m_audioFormat.bitsPerSample		= waveFormat->wBitsPerSample;
-
-        // Try to intialize our audio client
-        ok = m_client->Initialize(AUDCLNT_SHAREMODE_SHARED, 0,
-            0, 0, waveFormat, 0);
-        CoTaskMemFree(waveFormat);  // nullptrs are ok here
-        if(ok < 0)
-        {
-            // Unable to properly initialize IAudioClient
-            releaseDevice(m_client);
-            return false;
-        }
+        m_captureClient = nullptr;
 
         // Try and actually get a handle to the captureClient
-        ok = m_client->GetService(__uuidof(IAudioCaptureClient),
+        int ok = m_client->GetService(__uuidof(IAudioCaptureClient),
             reinterpret_cast<void** >(&m_captureClient));
         if(ok < 0 || !m_captureClient)
         {
@@ -139,11 +93,11 @@ namespace AudioDX
         }
 
         // TODO: Some logic / error handling based off of flag return values. Skipping that for now.
-        AudioPacket ret(m_audioFormat, numFramesToRead * m_audioFormat.bitsPerBlock);
+        const size_t numBytesToWrite = numFramesToRead * m_audioFormat.bitsPerBlock;
+        AudioPacket ret(m_audioFormat, numBytesToWrite);
 
         // TODO: Think about adding some kind of bulk-inserter?
-        for(size_t i = 0; i < numFramesToRead * m_audioFormat.bitsPerBlock; ++i)
-            ret[i] = data[i];
+        ret.assign(data, numBytesToWrite);
 
         ok = m_captureClient->ReleaseBuffer(numFramesToRead);
         if(ok < 0)
@@ -171,7 +125,7 @@ namespace AudioDX
         bool continueReading = true;
         const size_t maxPacketsFallback = 100000;
         size_t packetsRead = 0;
-        while(true)
+        while(continueReading)
         {
             // See if there's any data we can get
             //d::this_thread::sleep_for(std::chrono::microseconds(m_referenceTime));
@@ -196,7 +150,7 @@ namespace AudioDX
             numFramesToRead = 0;
             unsigned long returnFlags = 0;
             ok = m_captureClient->GetBuffer(&data, &numFramesToRead, &returnFlags, 0, 0);
-            if(ok < 0)
+            if(ok < 0 || data == nullptr)
             {
                 // Something bad happened when we tried to grab the buffer
                 // Releasing the buffer here may or may not be bad...
@@ -217,7 +171,7 @@ namespace AudioDX
             const size_t bytesToCopy = numFramesToRead * m_audioFormat.bitsPerBlock;
             AudioPacket ret(m_audioFormat, bytesToCopy);
 
-            std::memcpy(ret.data(), data, bytesToCopy);
+            ret.assign(data, bytesToCopy);
 
             // TODO: Think about adding some kind of bulk-inserter?
             //for(size_t i = 0; i < numFramesToRead * m_audioFormat.bitsPerBlock; ++i)

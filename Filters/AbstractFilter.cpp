@@ -11,13 +11,25 @@ namespace AudioDX
     bool AbstractFilter::transformPacket(const AudioPacket& in, AudioPacket& out) const
     {
         // We were given empty buffers :(
-        if(in.size() == 0 || out.size() == 0)
+        if(in.byteSize() == 0 || out.byteSize() == 0)
             return false;
 
         const double ratio = double(in.getAudioFormat().samplesPerSecond) / double(out.getAudioFormat().samplesPerSecond);
+        if(ratio == 1.)
+        {
+            out.assign(in.data(), in.byteSize());
+            return true;
+        }
 
-        for(size_t i = 0; i < out.size(); ++i)
+        // TODO: bit conversions
+        const unsigned char inBitsPerBlock = in.getAudioFormat().bitsPerBlock;
+        const unsigned char outBitsPerBlock = out.getAudioFormat().bitsPerBlock;
+        const size_t maxSamples = out.sampleSize();
+
+        for(size_t i = 0; i < maxSamples; ++i)
+        {
             out[i] = in.at(size_t(double(i) * ratio));
+        }
 
         return true;
     }

@@ -18,7 +18,7 @@ namespace AudioDX
             IAudioCaptureClient* captureClient = nullptr);
         virtual ~AudioCaptureDeviceImpl();
 
-        virtual bool    initialize(TaskCallback* callback = nullptr);
+        virtual bool    initialize();
 
         // TODO: Modify signature to provide error handling features
         virtual AudioPacket readFromBuffer();
