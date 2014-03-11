@@ -21,9 +21,6 @@ namespace AudioDX
             return true;
         }
 
-        // TODO: bit conversions
-        const unsigned char inBitsPerBlock = in.getAudioFormat().bitsPerBlock;
-        const unsigned char outBitsPerBlock = out.getAudioFormat().bitsPerBlock;
         const size_t maxSamples = out.sampleSize();
 
         for(size_t i = 0; i < maxSamples; ++i)

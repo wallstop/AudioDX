@@ -159,6 +159,8 @@ namespace AudioDX
 
         const size_t maxPacketsFallback = 100000;   // Arbitrary
         size_t packetsWritten = 0;
+        size_t emptyLoops = 0;
+        const size_t maxLoops = 10; // Bailout in case we get stuck with an empty stream for too long
 
         while(continueWriting)
         {
@@ -204,6 +206,7 @@ namespace AudioDX
             if(!gotData)
             {
                 m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
+                continueWriting = ++emptyLoops < maxLoops;
                 continue;
             }
 
@@ -212,6 +215,7 @@ namespace AudioDX
             {
                 // Something went wrong here
                 m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
+                continueWriting = ++emptyLoops < maxLoops;
                 continue;
             }
 
@@ -221,8 +225,10 @@ namespace AudioDX
             if(inPacket.byteSize() > sizeOfBuffer)
             {
                 m_playbackClient->ReleaseBuffer(sizeOfBuffer, 0);
+                continueWriting = ++emptyLoops < maxLoops;
                 continue;
             }
+            emptyLoops = 0;
             const size_t outSize = determineBufferSize(inPacket, m_audioFormat);
             AudioPacket outPacket(m_audioFormat, outSize);
             const bool transformOk = filter.transformPacket(inPacket, outPacket);
@@ -248,8 +254,10 @@ namespace AudioDX
                 // Some error occured, but by now, we don't care about it...
             }
 
-            continueWriting = (ok >= 0) && (callback ? !callback->isTaskStopped() : packetsWritten < maxPacketsFallback);
+            continueWriting = (callback ? !callback->isTaskStopped() : packetsWritten < maxPacketsFallback);
         }
+
+        stop();
 
         return true;
 

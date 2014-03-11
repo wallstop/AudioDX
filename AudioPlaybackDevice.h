@@ -2,7 +2,6 @@
 #pragma once
 
 #include <AudioDX/AbstractAudioDevice.h>
-#include <AudioDX/Filters/AbstractFilter.h>
 
 namespace AudioDX
 {

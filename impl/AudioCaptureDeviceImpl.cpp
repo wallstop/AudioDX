@@ -192,6 +192,8 @@ namespace AudioDX
             continueReading = (callback ? !callback->isTaskStopped() : ++packetsRead < maxPacketsFallback);
         }
 
+        stop();
+
         return true;
     }
 

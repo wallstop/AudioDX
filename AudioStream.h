@@ -28,6 +28,7 @@ namespace AudioDX
         bool        front(AudioPacket& out) const;
         bool        pop(AudioPacket& out);
         void        push(const AudioPacket& in);
+        void        clear();
 
         AudioStream&    operator<<(const AudioPacket& in);
         bool            operator>>(AudioPacket& out);

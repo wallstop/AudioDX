@@ -6,7 +6,7 @@
 namespace AudioDX
 {
 
-    TaskCallback::TaskCallback() :  m_cancel(false)
+    TaskCallback::TaskCallback(bool started) :  m_cancel(!started)
     {
     }
 

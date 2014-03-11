@@ -57,6 +57,11 @@ namespace AudioDX
         return m_stream.pop(out);
     }
 
+    void AudioStream::clear()
+    {
+        m_stream.clear();
+    }
+
     void AudioStream::push(const AudioPacket& in)
     {
         m_stream.push(in);

@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <AudioDX/Filters/AbstractFilter.h>
+
 #include <memory>
 #include <string>
 
@@ -38,7 +40,7 @@ namespace AudioDX
         //virtual AudioStream     readFromBuffer(TaskCallback* callback) = 0;
         virtual bool            readFromBuffer(AudioStream& out, TaskCallback* callback) = 0;
         virtual bool            writeToBuffer(const AudioPacket& in, const AbstractFilter& filter) = 0;
-        virtual bool            writeToBuffer(AudioStream& in, const AbstractFilter& filter, TaskCallback* callback = nullptr) = 0;
+        virtual bool            writeToBuffer(AudioStream& in, const AbstractFilter& filter = AbstractFilter(), TaskCallback* callback = nullptr) = 0;
 
         virtual std::string     id() const;
 
